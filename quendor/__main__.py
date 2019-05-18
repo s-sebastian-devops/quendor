@@ -8,14 +8,22 @@ if sys.version_info < (3, 0):
 
 
 def process_options(opts):
+    op_usage = None
+
+    if len(sys.argv) < 3:
+        if sys.argv[0].endswith("__main__.py"):
+            op_usage = "-m quendor"
+        else:
+            op_usage = sys.argv[0]
+
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="Options:",
         usage=textwrap.dedent(
-            """
+            f"""
             The general format is:
 
-                python3 -m quendor
+                python3 {op_usage}
             """
         ),
         epilog=textwrap.dedent(
