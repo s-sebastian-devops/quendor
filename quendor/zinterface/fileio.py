@@ -1,6 +1,8 @@
 import os
 import sys
 
+from quendor.utilities.messages import eprint
+
 
 def locate_story_file(story_file: str) -> str:
     """
@@ -18,6 +20,6 @@ def locate_story_file(story_file: str) -> str:
         if found:
             return os.path.join(path, story_file)
 
-    print(f"\nUnable to find the story file: {story_file}\n")
+    eprint(f"\nUnable to find the story file: {story_file}\n")
 
     sys.exit()
