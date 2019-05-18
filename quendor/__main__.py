@@ -2,6 +2,8 @@ import sys
 import argparse
 import textwrap
 
+from quendor.zinterface.fileio import locate_story_file
+
 if sys.version_info < (3, 0):
     sys.stderr.write("Quendor requires Python 3.\n")
     sys.exit(1)
@@ -47,7 +49,7 @@ def main():
     print("Quendor Z-Machine Interpreter\n")
 
     options = process_options(sys.argv[1:])
-    print(options)
+    locate_story_file(options["story_file"])
 
 
 if __name__ == "__main__":
