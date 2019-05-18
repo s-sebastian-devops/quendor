@@ -40,3 +40,15 @@ def load_story_file(story_file: str) -> BufferedReader:
     assert isinstance(file, BufferedReader)
 
     return file
+
+
+def load_story_data(story_file: BufferedReader) -> bytes:
+    """
+    This function will read the data from a binary story file as a series of
+    bytes.
+    """
+
+    story_file.seek(0)
+    story_data = story_file.read()
+
+    return story_data
