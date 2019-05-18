@@ -18,6 +18,10 @@ packed_writer = zipfile.ZipFile(packed, "w", zipfile.ZIP_DEFLATED)
 for file_name in os.listdir(package_directory):
     file_path = os.path.join(package_directory, file_name)
 
+    if os.path.isdir(file_path):
+        for file_name in os.listdir(file_path):
+            file_path = os.path.join(file_path, file_name)
+
     if os.path.isfile(file_path):
         packed_writer.write(file_path)
 
