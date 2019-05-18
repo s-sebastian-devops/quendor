@@ -2,11 +2,7 @@ import sys
 import argparse
 import textwrap
 
-from quendor.zinterface.fileio import (
-    locate_story_file,
-    load_story_file,
-    load_story_data,
-)
+import quendor.zinterface.fileio as zio
 
 if sys.version_info < (3, 0):
     sys.stderr.write("Quendor requires Python 3.\n")
@@ -54,9 +50,8 @@ def main():
 
     options = process_options(sys.argv[1:])
 
-    story_file = locate_story_file(options["story_file"])
-    story_file = load_story_file(story_file)
-    load_story_data(story_file)
+    story_data = zio.load_story(options["story_file"])
+    assert isinstance(story_data, bytes)
 
 
 if __name__ == "__main__":

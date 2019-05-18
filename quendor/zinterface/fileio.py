@@ -5,6 +5,18 @@ from io import BufferedReader
 from quendor.utilities.messages import eprint
 
 
+def load_story(story_file: str) -> bytes:
+    """
+    Loads a story file that is passed in from the user at the command line.
+    """
+
+    story_file = locate_story_file(story_file)
+    story_file = load_story_file(story_file)
+    story_data = load_story_data(story_file)
+
+    return story_data
+
+
 def locate_story_file(story_file: str) -> str:
     """
     This function makes sure that the passed in story file can be found. The
