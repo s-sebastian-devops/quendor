@@ -33,13 +33,21 @@ def process_options(opts):
         ),
     )
 
-    parser.parse_args(opts)
+    parser.add_argument("story_file", help="z-code story file to load")
+
+    option_set = parser.parse_args(opts)
+
+    options = dict()
+    options["story_file"] = option_set.story_file
+
+    return options
 
 
 def main():
     print("Quendor Z-Machine Interpreter\n")
 
-    process_options(sys.argv[1:])
+    options = process_options(sys.argv[1:])
+    print(options)
 
 
 if __name__ == "__main__":
