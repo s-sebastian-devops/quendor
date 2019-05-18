@@ -13,3 +13,18 @@ Quendor is purely an exercise in coding and learning how to write emulators. Wha
 Quendor will attempt to replace none of them.
 
 Quendor will be written entirely in Python. (And only for Python 3.) This will no doubt have some impacts on the performance of the interpreter. That said, the choice of Python should not compromise my ability to provide an accurate implementation; perhaps merely a performant one.
+
+## Running Quendor
+
+Quendor is designed to run as a module. That means if you have the code distribution, you should be able to do this:
+
+```
+python3 -m quendor
+```
+
+To test that all is well, from a Python REPL, try the following:
+
+```
+import quendor
+print(quendor.__version__)
+```
