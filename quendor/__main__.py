@@ -2,6 +2,7 @@ import sys
 import argparse
 import textwrap
 
+from quendor.xyzzy import mithican
 import quendor.zinterface.fileio as zio
 
 if sys.version_info < (3, 0):
@@ -37,10 +38,19 @@ def process_options(opts):
 
     parser.add_argument("story_file", help="z-code story file to load")
 
+    parser.add_argument(
+        "--xyzzy",
+        dest="xyzzy",
+        default=False,
+        action="store_true",
+        help="Run Mithican (pre-Quendor)",
+    )
+
     option_set = parser.parse_args(opts)
 
     options = dict()
     options["story_file"] = option_set.story_file
+    options["xyzzy"] = option_set.xyzzy
 
     return options
 
@@ -52,6 +62,9 @@ def main():
 
     story_data = zio.load_story(options["story_file"])
     assert isinstance(story_data, bytes)
+
+    if options["xyzzy"]:
+        mithican.execute(story_data)
 
 
 if __name__ == "__main__":
