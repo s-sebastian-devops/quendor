@@ -27,7 +27,16 @@ class Memory:
         return (self.memory[address] << 8) + self.memory[address + 1]
 
 
+class CPU:
+    @staticmethod
+    def process(memory):
+        pass
+
+
 def execute(story_data):
     print("\nA hollow voice says 'As you wish...'\n")
 
-    Memory(story_data)
+    memory = Memory(story_data)
+
+    cpu = CPU()
+    cpu.process(memory)
