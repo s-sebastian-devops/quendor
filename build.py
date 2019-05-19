@@ -9,29 +9,27 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
-package_directory = "quendor"
+package_name = "quendor"
+package_directory = package_name
 python_directive = "#!/usr/bin/env python3"
 
 packed = StringIO()
 packed_writer = zipfile.ZipFile(packed, "w", zipfile.ZIP_DEFLATED)
 
-for file_name in os.listdir(package_directory):
-    file_path = os.path.join(package_directory, file_name)
-
-    if os.path.isdir(file_path):
-        for file_name in os.listdir(file_path):
-            file_path = os.path.join(file_path, file_name)
-
-    if os.path.isfile(file_path):
-        packed_writer.write(file_path)
+for dirpath, dirnames, fnames in os.walk(package_directory):
+    for fname in fnames:
+        fpath = os.path.join(dirpath, fname)
+        packed_writer.write(fpath)
 
 packed_writer.writestr(
     "__main__.py",
     """
-from quendor import __main__
+from {} import __main__
 if __name__ == '__main__':
     __main__.main()
-""",
+""".format(
+        package_name
+    ),
 )
 
 packed_writer.close()
