@@ -1,4 +1,5 @@
 import sys
+import logging
 import argparse
 import textwrap
 
@@ -38,6 +39,20 @@ def process_options(opts):
 
     parser.add_argument("story_file", help="z-code story file to load")
 
+    logging_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="log_level",
+        default="WARNING",
+        choices=logging_levels,
+        metavar="",
+        help="increase output verbosity; allowed values: "
+        + ", ".join(logging_levels)
+        + " (default: %(default)s)",
+    )
+
     parser.add_argument(
         "--xyzzy",
         dest="xyzzy",
@@ -51,6 +66,10 @@ def process_options(opts):
     options = dict()
     options["story_file"] = option_set.story_file
     options["xyzzy"] = option_set.xyzzy
+
+    logging.basicConfig(
+        level=logging.getLevelName(option_set.log_level), format="%(message)s"
+    )
 
     return options
 
