@@ -10,6 +10,13 @@ class Memory:
 
         logging.debug(f"Start address: \t {self.pc} \t {hex(self.pc)}")
 
+    def read_instruction(self, address):
+        current_byte = self.memory[address]
+        logging.debug(f"Current byte: \t {current_byte} \t ({hex(current_byte)})")
+
+        opcode_byte = self.memory[current_byte]
+        logging.debug(f"Opcode byte: \t {opcode_byte} \t ({hex(opcode_byte)})")
+
     def read_starting_address(self):
         """
         The word at $06 contains the byte address of the first instruction to
@@ -30,7 +37,7 @@ class Memory:
 class CPU:
     @staticmethod
     def process(memory):
-        pass
+        instruction = memory.read_instruction(memory.pc)
 
 
 def execute(story_data):
