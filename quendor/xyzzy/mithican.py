@@ -24,6 +24,7 @@ class Memory:
         opcode_form = None
         operand_count = None
         operand_types = []
+        operands = []
 
         current_byte = address
         logging.debug(f"Current byte: \t {current_byte} \t ({hex(current_byte)})")
@@ -77,6 +78,26 @@ class Memory:
             operand_types = self.read_operand_type(opcode_form, opcode_byte)
 
         logging.debug(f"Operand types: \t {operand_types}")
+
+        ########################################################
+        # Determine the operands; for each operand type get
+        # the operands that match the count.
+        ########################################################
+
+        for operand_type in operand_types:
+            if operand_type == OpType.LARGE:
+                operands.append(self.read_u16_address(current_byte))
+                current_byte += 2
+
+            if operand_type == OpType.SMALL:
+                operands.append(self.read_u8_address(current_byte))
+                current_byte += 1
+
+            if operand_type == OpType.VARIABLE:
+                operands.append(self.read_u8_address(current_byte))
+                current_byte += 1
+
+        logging.debug(f"Operands: \t {operands}")
 
     def read_opcode(self, byte, operand_count):
         return "{NAME}"
@@ -175,6 +196,9 @@ class Memory:
         """
 
         return (self.memory[address] << 8) + self.memory[address + 1]
+
+    def read_u8_address(self, address):
+        return self.memory[address]
 
     @staticmethod
     def bin_of(number, length=8):
