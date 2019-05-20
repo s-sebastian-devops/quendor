@@ -6,8 +6,11 @@ class Memory:
         self.memory = bytearray(memory)
         self.pc = None
 
+        self.version = self.memory[0x00]
+
         self.read_starting_address()
 
+        logging.debug(f"Story file version: \t {self.version}")
         logging.debug(f"Start address: \t {self.pc} \t {hex(self.pc)}")
 
     def read_instruction(self, address):
