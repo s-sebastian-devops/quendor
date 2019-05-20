@@ -1,5 +1,9 @@
 import logging
 
+from enum import Enum
+
+OpForm = Enum("Form", "SHORT LONG VARIABLE EXTENDED")
+
 
 class Memory:
     def __init__(self, memory):
@@ -19,6 +23,28 @@ class Memory:
 
         opcode_byte = self.memory[address]
         logging.debug(f"Opcode byte: \t {opcode_byte} \t ({hex(opcode_byte)})")
+
+        ########################################################
+        # Determine the instruction form.
+        ########################################################
+
+        if self.version >= 5 and (opcode_byte == 0xBE):
+            opcode = self.read_extended_opcode(self.memory[current_byte])
+            opcode_form = OpForm.EXTENDED
+            current_byte += 1
+        elif opcode_byte & self.bin_of(96) == self.dec_of(0b01100000):
+            opcode_form = OpForm.VARIABLE
+        elif opcode_byte & self.bin_of(64) == self.dec_of(0b01000000):
+            opcode_form = OpForm.SHORT
+        else:
+            opcode_form = OpForm.LONG
+
+        logging.debug(f"Opcode form: \t {opcode_form.name}")
+
+    @staticmethod
+    def read_extended_opcode(byte):
+        print("extended opcode")
+        pass
 
     def read_starting_address(self):
         """
