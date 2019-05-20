@@ -14,7 +14,7 @@ class Memory:
         current_byte = address
         logging.debug(f"Current byte: \t {current_byte} \t ({hex(current_byte)})")
 
-        opcode_byte = self.memory[current_byte]
+        opcode_byte = self.memory[address]
         logging.debug(f"Opcode byte: \t {opcode_byte} \t ({hex(opcode_byte)})")
 
     def read_starting_address(self):
