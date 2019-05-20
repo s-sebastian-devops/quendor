@@ -47,11 +47,23 @@ class Memory:
         logging.debug(f"Opcode form: \t {opcode_form.name}")
 
         ########################################################
-        # Determine the operand count and type(s).
+        # Determine the operand count.
         ########################################################
 
         operand_count = self.read_operand_count(opcode_form, opcode_byte)
         logging.debug(f"Operand count: \t {operand_count.name}")
+
+        ########################################################
+        # Determine the opcode.
+        ########################################################
+
+        if not opcode:
+            opcode = self.read_opcode(opcode_byte, operand_count)
+
+        logging.debug(f"Opcode name: \t {opcode}")
+
+    def read_opcode(self, byte, operand_count):
+        return "{NAME}"
 
     def read_operand_count(self, opcode_form, opcode_byte):
         if opcode_form == OpForm.LONG:
