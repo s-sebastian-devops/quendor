@@ -2,7 +2,7 @@ import logging
 
 from enum import Enum
 
-OpForm = Enum("Form", "SHORT LONG VARIABLE EXTENDED")
+OpForm = Enum("OpForm", "SHORT LONG VARIABLE EXTENDED")
 OpCount = Enum("OpCount", "OP0 OP1 OP2 VAR")
 OpType = Enum("OpType", "LARGE SMALL VARIABLE")
 
