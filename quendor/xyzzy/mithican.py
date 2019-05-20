@@ -3,6 +3,7 @@ import logging
 from enum import Enum
 
 OpForm = Enum("Form", "SHORT LONG VARIABLE EXTENDED")
+OpCount = Enum("OpCount", "OP0 OP1 OP2 VAR")
 
 
 class Memory:
@@ -40,6 +41,29 @@ class Memory:
             opcode_form = OpForm.LONG
 
         logging.debug(f"Opcode form: \t {opcode_form.name}")
+
+        ########################################################
+        # Determine the operand count and type(s).
+        ########################################################
+
+        operand_count = self.read_operand_count(opcode_form, opcode_byte)
+        logging.debug(f"Operand count: \t {operand_count.name}")
+
+    def read_operand_count(self, opcode_form, opcode_byte):
+        if opcode_form == OpForm.LONG:
+            count = OpCount.OP2
+        elif opcode_form == OpForm.SHORT:
+            if opcode_byte & self.bin_of(48) == self.dec_of(0b00110000):
+                count = OpCount.OP0
+            else:
+                count = OpCount.OP1
+        elif opcode_form == OpForm.VARIABLE:
+            if opcode_byte & self.bin_of(32) == self.dec_of(0b00100000):
+                count = OpCount.VAR
+            else:
+                count = OpCount.OP2
+
+        return count
 
     @staticmethod
     def read_extended_opcode(byte):
