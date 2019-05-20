@@ -4,6 +4,7 @@ from enum import Enum
 
 OpForm = Enum("Form", "SHORT LONG VARIABLE EXTENDED")
 OpCount = Enum("OpCount", "OP0 OP1 OP2 VAR")
+OpType = Enum("OpType", "LARGE SMALL VARIABLE")
 
 
 class Memory:
@@ -22,6 +23,7 @@ class Memory:
         opcode = None
         opcode_form = None
         operand_count = None
+        operand_types = []
 
         current_byte = address
         logging.debug(f"Current byte: \t {current_byte} \t ({hex(current_byte)})")
@@ -62,6 +64,20 @@ class Memory:
 
         logging.debug(f"Opcode name: \t {opcode}")
 
+        ########################################################
+        # Determine the operand type(s).
+        ########################################################
+
+        if opcode_form == OpForm.VARIABLE or opcode_form == OpForm.EXTENDED:
+            operand_types = self.read_operand_type(
+                opcode_form, self.memory[current_byte]
+            )
+            current_byte += 1
+        else:
+            operand_types = self.read_operand_type(opcode_form, opcode_byte)
+
+        logging.debug(f"Operand types: \t {operand_types}")
+
     def read_opcode(self, byte, operand_count):
         return "{NAME}"
 
@@ -81,10 +97,68 @@ class Memory:
 
         return count
 
+    def read_operand_type(self, opcode_form, opcode_byte):
+        if opcode_form == OpForm.SHORT:
+            if opcode_byte & self.bin_of(32) == self.dec_of(0b00100000):
+                return [OpType.VARIABLE]
+            elif opcode_byte & self.binof(0) == self.dec_of(0b00000000):
+                return [OpType.LARGE]
+            elif opcode_byte & self.bin_of(16) == self.dec_of(0b00010000):
+                return [OpType.SMALL]
+
+        elif opcode_form == OpForm.LONG:
+            operand_types = []
+
+            if opcode_byte & self.bin_of(32) == self.dec_of(0b00100000):
+                operand_types.append(OpType.VARIABLE)
+            else:
+                operand_types.append(OpType.SMALL)
+
+            if opcode_byte & self.bin_of(16) == self.dec_of(0b00010000):
+                operand_types.append(OpType.VARIABLE)
+            else:
+                operand_types.append(OpType.SMALL)
+
+            return operand_types
+
+        elif opcode_form == OpForm.VARIABLE or opcode_form == OpForm.EXTENDED:
+            operand_types = []
+
+            if opcode_byte & self.bin_of(192) == self.dec_of(0b11000000):
+                return operand_types
+            else:
+                operand_types.append(self.read_optype(opcode_byte >> 6))
+
+            if opcode_byte & self.bin_of(48) == self.dec_of(0b00110000):
+                return operand_types
+            else:
+                operand_types.append(self.read_optype((opcode_byte & 0b00110000) >> 4))
+
+            if opcode_byte & self.bin_of(12) == self.dec_of(0b00001100):
+                return operand_types
+            else:
+                operand_types.append(self.read_optype((opcode_byte & 0b00001100) >> 2))
+
+            if opcode_byte & self.bin_of(3) == self.dec_of(0b00000011):
+                return operand_types
+            else:
+                operand_types.append(self.read_optype(opcode_byte & 0b00000011))
+
+            return operand_types
+
     @staticmethod
     def read_extended_opcode(byte):
         print("extended opcode")
         pass
+
+    @staticmethod
+    def read_optype(byte):
+        if byte == 0:
+            return OpType.LARGE
+        elif byte == 1:
+            return OpType.SMALL
+        elif byte == 2:
+            return OpType.VARIABLE
 
     def read_starting_address(self):
         """
