@@ -33,6 +33,16 @@ class Memory:
 
         return (self.memory[address] << 8) + self.memory[address + 1]
 
+    @staticmethod
+    def bin_of(number, length=8):
+        value = format(number, "#0{}b".format(length + 2))
+        assert set(value) <= set("b01")
+        return int(value, 2)
+
+    @staticmethod
+    def dec_of(number):
+        return int(number)
+
 
 class CPU:
     @staticmethod
